@@ -3,7 +3,7 @@
 ## Installation
 
 This Flatpak is available on
-[Flathub](https://flathub.org/apps/details/org.godotengine.Godot3).
+[Flathub](https://flathub.org/apps/details/org.godotengine.Godot3Sharp).
 After following the [Flatpak setup guide](https://flatpak.org/setup/),
 you can install it by entering the following command in a terminal:
 
@@ -15,7 +15,7 @@ Once the Flatpak is installed, you can run Godot using your desktop environment'
 application launcher.
 
 **Looking to package a Godot project as a Flatpak ?**
-See [flathub/org.godotengine.godot.BaseApp](https://github.com/flathub/org.godotengine.godot.BaseApp).
+For packaging a Godot project that _doesn't_ use C#, see [flathub/org.godotengine.godot.BaseApp](https://github.com/flathub/org.godotengine.godot.BaseApp). A specific BaseApp for Godot3Sharp does not exist yet, but it could be set up in the future. 
 
 ## Updating
 
@@ -28,7 +28,7 @@ flatpak update
 
 ## Using an external script editor
 
-This version of Godot is built with special [permissions](https://github.com/flathub/org.godotengine.Godot/blob/394f81c3310b82f5069ea917bb21f49888f818c6/org.godotengine.Godot3.yaml#L46) to be able to run commands on the host system outside of the sandbox via [flatpak-spawn](https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-spawn). This is done by prefixing the command with `flatpak-spawn --host`. For example, if you want to run `gnome-terminal` on the host system outside of the sandbox, you can do so by running `flatpak-spawn --host gnome-terminal`.
+This version of Godot is built with special [permissions](https://github.com/flathub/org.godotengine.Godot3Sharp/blob/5c9d052fc3be22ab3e4b3f88fbb45cdd3f153c3c/org.godotengine.Godot3Sharp.yaml#L66) to be able to run commands on the host system outside of the sandbox via [flatpak-spawn](https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-spawn). This is done by prefixing the command with `flatpak-spawn --host`. For example, if you want to run `gnome-terminal` on the host system outside of the sandbox, you can do so by running `flatpak-spawn --host gnome-terminal`.
 
 To spawn an external editor in Godot, all command line arguments must be split from the commands path in the [external editor preferences](https://docs.godotengine.org/en/latest/getting_started/editor/external_editor.html) and because the command needs to be prefixed with `"flatpak-spawn --host"`, the **Exec Path** is replaced by `flatpak-spawn` and the **Exec Flags** are prefixed by `--host [command path]`.
 
@@ -52,7 +52,7 @@ After the first C# script is created, it is necessary to click `build` within Go
 
 ## Limitations
 
-- The Mono external editor support does not work.
+- C#/.NET/Mono external editor support does not work out-of-the-box, though this is currently being discussed and worked on [here](https://github.com/flathub/org.godotengine.Godot3Sharp/issues/2). [There is a similar GitHub issue for the Godot 4 C# Flatpak that may also be relevant here](https://github.com/flathub/org.godotengine.GodotSharp/issues/2).
 
 ## Building from source
 
@@ -63,7 +63,7 @@ then enter the following commands in a terminal:
 ```bash
 git clone --recursive https://github.com/flathub/org.godotengine.Godot.git
 cd org.godotengine.Godot/
-flatpak install --user flathub org.freedesktop.Sdk//22.08 org.freedesktop.Sdk.Extension.dotnet7//22.08 org.freedesktop.Sdk.Extension.openjdk11//22.08 -y
+flatpak install --user flathub org.freedesktop.Sdk//23.08 org.freedesktop.Sdk.Extension.mono6//23.08 org.freedesktop.Sdk.Extension.openjdk11//23.08 org.freedesktop.Sdk.Extension.dotnet7//23.08 -y
 flatpak-builder --force-clean --install --user -y builddir org.godotengine.Godot.yaml
 ```
 
@@ -83,6 +83,3 @@ python3 generate_sources.py
 
 If `csproj` files that aren't included within the script include new packages, they must be added to the script.
 
-### Double Precision
-
-To compile Godot 4 with double precision, `org.godotengine.Godot.yaml` needs to be modified to include the appropriate flags. Under `Build Commands`, change all instances of `precision=single` to `precision=double`.

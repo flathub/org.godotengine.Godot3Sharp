@@ -1,7 +1,7 @@
 diff --git a/misc/dist/linux/org.godotengine.Godot.appdata.xml b/misc/dist/linux/org.godotengine.Godot.appdata.xml
 --- a/misc/dist/linux/org.godotengine.Godot.appdata.xml	2023-03-06 14:13:41.000000000 +0000
 +++ b/misc/dist/linux/org.godotengine.Godot.appdata.xml	2023-03-16 22:20:25.946962567 +0000
-@@ -1,36 +1,70 @@
+@@ -1,36 +1,75 @@
  <?xml version="1.0" encoding="UTF-8"?>
 -<!-- Copyright 2017-2022 Rémi Verschelde <remi@godotengine.org> -->
  <component type="desktop">
@@ -26,6 +26,10 @@ diff --git a/misc/dist/linux/org.godotengine.Godot.appdata.xml b/misc/dist/linux
 -      license. No strings attached, no royalties, nothing. Your game is yours,
 -      down to the last line of engine code.
 -    </p>
++    <p>
++      <em>NOTE: This Flatpak is unofficial and not supported by Godot Engine developers.</em>
++      Find officially supported binaries on godotengine.org.
++    </p>
 +    <p>Godot is an advanced, feature-packed, multi-platform 2D and 3D open source game engine.</p>
 +    <p>Create games with ease, using Godot's unique approach to game development.</p>
 +    <ul>
@@ -38,7 +42,8 @@ diff --git a/misc/dist/linux/org.godotengine.Godot.appdata.xml b/misc/dist/linux
 +    </ul>
 +    <p>Limitations of the Flatpak version:</p>
 +    <ul>
-+      <li>No Mono external editor support.</li>
++      <li>Although built with Mono 6, this Flatpak uses .NET 8 for building C# solutions in Godot projects. To (re)build a C# solution in the Godot editor, make sure that "Editor -> Editor Settings --> Mono --> Builds --> Build Tool" is set to "dotnet CLI", and not "MSBuild (Mono)", before (re)building the C# solution, otherwise Godot won't be able to find MSBuild. It should be set to "dotnet CLI" by default, but if it isn't, reset it by going to the editor settings as previously described.</li>
++      <li>C#/.NET/Mono external editor support does not work out-of-the-box, though this is currently being discussed and worked on. See: https://github.com/flathub/org.godotengine.GodotSharp/issues/2 and https://github.com/flathub/org.godotengine.Godot3Sharp/issues/2</li>
 +      <li>External script editors are still supported (for use outside of Mono), but you need to follow the steps described here: https://github.com/flathub/org.godotengine.Godot3Sharp#using-an-external-script-editor</li>
 +      <li>After the first C# script is created, it is necessary to click build within Godot. Alternatively, running dotnet restore in the IDE's terminal would work as well.</li>
 +    </ul>
