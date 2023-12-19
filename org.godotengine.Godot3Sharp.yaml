@@ -5,6 +5,7 @@ sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk11
   - org.freedesktop.Sdk.Extension.mono6
+  - org.freedesktop.Sdk.Extension.dotnet8
 command: godot
 
 build-options:
@@ -15,16 +16,16 @@ build-options:
         # (causes issues on other architectures)
         SCONS_FLAGS_EXTRA: lto=full
 
-  append-path: /usr/lib/sdk/mono6/bin
+  append-path: /usr/lib/sdk/mono6/bin:/usr/lib/sdk/dotnet8/bin
 
-  append-ld-library-path: /usr/lib/sdk/mono6/lib
+  append-ld-library-path: /usr/lib/sdk/mono6/lib:/usr/lib/sdk/dotnet8/lib
 
   prepend-path: /app/build_staging/xvfb/bin/
 
   prepend-ld-library-path: /app/build_staging/xvfb/lib/
 
   env:
-    PKG_CONFIG_PATH: /app/lib/pkgconfig:/app/share/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/sdk/mono6/lib/pkgconfig
+    PKG_CONFIG_PATH: /app/lib/pkgconfig:/app/share/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/sdk/mono6/lib/pkgconfig:/usr/lib/sdk/dotnet8/lib/pkgconfig
 
     # Will be appended to the version string displayed in the editor and command-line help
     BUILD_NAME: flathub
@@ -33,7 +34,7 @@ build-options:
 
     DOTNET_NOLOGO: True
 
-    DOTNET_ROOT: /usr/lib/sdk/dotnet7/lib
+    DOTNET_ROOT: /usr/lib/sdk/dotnet8/lib
 
     # SCons flags common to all builds
     # Shouldn't be quoted when used as it's a single string, not an array
@@ -76,14 +77,20 @@ modules:
 
   - name: mono
     buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/mono6/install.sh
+
+  - name: dotnet
+    buildsystem: simple
     build-options:
         arch:
             x86_64:
                 env:
                     RUNTIME: linux-x64
     build-commands:
-      - /usr/lib/sdk/mono6/install.sh
-      - cp -r /usr/lib/sdk/mono6/lib/packs/ /app/lib/mono/
+      - /usr/lib/sdk/dotnet8/install.sh
+      - cp -r /usr/lib/sdk/dotnet8/lib/packs/ /app/lib/dotnet/
+
 
   - name: scons
     buildsystem: simple
