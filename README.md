@@ -83,6 +83,3 @@ python3 generate_sources.py
 
 If `csproj` files that aren't included within the script include new packages, they must be added to the script.
 
-### Double Precision
-
-To compile Godot 4 with double precision, `org.godotengine.Godot.yaml` needs to be modified to include the appropriate flags. Under `Build Commands`, change all instances of `precision=single` to `precision=double`.
