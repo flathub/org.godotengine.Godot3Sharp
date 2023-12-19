@@ -63,7 +63,7 @@ then enter the following commands in a terminal:
 ```bash
 git clone --recursive https://github.com/flathub/org.godotengine.Godot.git
 cd org.godotengine.Godot/
-flatpak install --user flathub org.freedesktop.Sdk//22.08 org.freedesktop.Sdk.Extension.dotnet7//22.08 org.freedesktop.Sdk.Extension.openjdk11//22.08 -y
+flatpak install --user flathub org.freedesktop.Sdk//23.08 org.freedesktop.Sdk.Extension.mono6//23.08 org.freedesktop.Sdk.Extension.openjdk11//23.08 org.freedesktop.Sdk.Extension.dotnet7//23.08 -y
 flatpak-builder --force-clean --install --user -y builddir org.godotengine.Godot.yaml
 ```
 
