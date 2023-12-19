@@ -5,6 +5,7 @@ sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk11
   - org.freedesktop.Sdk.Extension.mono6
+  - org.freedesktop.Sdk.Extension.dotnet8
 command: godot
 
 build-options:
@@ -15,19 +16,25 @@ build-options:
         # (causes issues on other architectures)
         SCONS_FLAGS_EXTRA: lto=full
 
-  append-path: /usr/lib/sdk/mono6/bin
+  append-path: /usr/lib/sdk/mono6/bin:/usr/lib/sdk/dotnet8/bin
 
-  append-ld-library-path: /usr/lib/sdk/mono6/lib
+  append-ld-library-path: /usr/lib/sdk/mono6/lib:/usr/lib/sdk/dotnet8/lib
 
   prepend-path: /app/build_staging/xvfb/bin/
 
   prepend-ld-library-path: /app/build_staging/xvfb/lib/
 
   env:
-    PKG_CONFIG_PATH: /app/lib/pkgconfig:/app/share/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/sdk/mono6/lib/pkgconfig
+    PKG_CONFIG_PATH: /app/lib/pkgconfig:/app/share/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/sdk/mono6/lib/pkgconfig:/usr/lib/sdk/dotnet8/lib/pkgconfig
 
     # Will be appended to the version string displayed in the editor and command-line help
     BUILD_NAME: flathub
+
+    DOTNET_CLI_TELEMETRY_OPTOUT: True
+
+    DOTNET_NOLOGO: True
+
+    DOTNET_ROOT: /usr/lib/sdk/dotnet8/lib
 
     # SCons flags common to all builds
     # Shouldn't be quoted when used as it's a single string, not an array
@@ -56,7 +63,7 @@ finish-args:
   - --socket=pulseaudio
   - --filesystem=host
   - --device=all
-#  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak
 
 modules:
   - shared-modules/glu/glu-9.json
@@ -72,6 +79,18 @@ modules:
     buildsystem: simple
     build-commands:
       - /usr/lib/sdk/mono6/install.sh
+
+  - name: dotnet
+    buildsystem: simple
+    build-options:
+        arch:
+            x86_64:
+                env:
+                    RUNTIME: linux-x64
+    build-commands:
+      - /usr/lib/sdk/dotnet8/bin/install-sdk.sh
+      - cp -r /usr/lib/sdk/dotnet8/lib/packs/ /app/lib/dotnet/
+
 
   - name: scons
     buildsystem: simple
@@ -95,12 +114,10 @@ modules:
         commands:
           - export APPDATA="$XDG_DATA_HOME"
           - export PATH="/app/jre/bin:$PATH"
+          - export DOTNET_ROOT="/app/lib/dotnet"
+          - export DOTNET_CLI_TELEMETRY_OPTOUT=true
+          - export DOTNET_NOLOGO=true
           - /app/bin/godot-bin "$@"
-      - type: script
-        dest-filename: msbuild
-        commands:
-          - #!/bin/sh
-          - MONO_GC_PARAMS="nursery-size=64m,$MONO_GC_PARAMS" exec mono --assembly-loader=strict $MONO_OPTIONS /app/lib/mono/msbuild/15.0/bin/MSBuild.dll "$@"
       - type: file
         path: nuget/nuget-source.config
       - type: file
@@ -125,13 +142,6 @@ modules:
       - rm -f /app/bin/godot.*
       - cp /app/bin/libmonosgen-2.0.so /app/lib/libmonosgen-2.0.so.1
       - install -D -m755 godot.sh /app/bin/godot
-      - install -D -m755 msbuild /app/bin/msbuild
-      - cp -R /usr/lib/sdk/mono6/lib/mono/msbuild /app/lib/mono/msbuild
-      - cp -R /app/lib/mono/msbuild /app/bin/GodotSharp/Mono/lib/mono/msbuild
-      - cp -R /usr/lib/sdk/mono6/lib/mono/xbuild /app/lib/mono/xbuild
-      - cp -R /app/lib/mono/xbuild /app/bin/GodotSharp/Mono/lib/mono/xbuild
-      - cp -R /usr/lib/sdk/mono6/lib/mono/xbuild-frameworks /app/lib/mono/xbuild-frameworks
-      - cp -R /app/lib/mono/xbuild-frameworks /app/bin/GodotSharp/Mono/lib/mono/xbuild-frameworks
       - desktop-file-edit --set-name="Godot Engine 3 (C#/.NET)" --set-icon=${FLATPAK_ID} misc/dist/linux/org.godotengine.Godot.desktop
       - install -Dm644 misc/dist/linux/org.godotengine.Godot.desktop /app/share/applications/$FLATPAK_ID.desktop
       - install -Dm644 misc/dist/linux/org.godotengine.Godot.xml /app/share/mime/packages/$FLATPAK_ID.xml
