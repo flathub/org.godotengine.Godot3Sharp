@@ -88,7 +88,7 @@ modules:
                 env:
                     RUNTIME: linux-x64
     build-commands:
-      - /usr/lib/sdk/dotnet8/install.sh
+      - /usr/lib/sdk/dotnet8/bin/install-sdk.sh
       - cp -r /usr/lib/sdk/dotnet8/lib/packs/ /app/lib/dotnet/
 
 
