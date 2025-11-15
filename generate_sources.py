@@ -28,9 +28,9 @@ def main():
                 '--env=DOTNET_NOLOGO=true',
                 '--env=DOTNET_CLI_TELEMETRY_OPTOUT=true',
                 '--env=DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true',
-                '--command=sh', '--runtime=org.freedesktop.Sdk//22.08', '--share=network',
-                '--filesystem=%s' % os.getcwd(), 'org.freedesktop.Sdk.Extension.dotnet7//22.08', '-c',
-                'PATH="${PATH}:/usr/lib/sdk/dotnet7/bin" LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib/sdk/dotnet7/lib" exec dotnet restore "$@"',
+                '--command=sh', '--runtime=org.freedesktop.Sdk//23.08', '--share=network',
+                '--filesystem=%s' % os.getcwd(), 'org.freedesktop.Sdk.Extension.dotnet7//23.08', '-c',
+                'PATH="${PATH}:/usr/lib/sdk/dotnet8/bin" LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib/sdk/dotnet8/lib" exec dotnet restore "$@"',
                 '--', '--packages', tmp, project])
 
             # Append the package data to sources
@@ -41,13 +41,15 @@ def main():
                 url = 'https://api.nuget.org/v3-flatcontainer/{}/{}/{}'.format(name, version, filename)
                 with path.open() as fp:
                     sha512 = binascii.hexlify(base64.b64decode(fp.read())).decode('ascii')
-                    sources.append({
+                    source = {
                         'type': 'file',
                         'url': url,
                         'sha512': sha512,
                         'dest': "nuget-sources",
                         'dest-filename': filename,
-                    })
+                    }
+                    if(source not in sources):
+                        sources.append(source)
 
     # Save the sources into a JSON file
     with open('nuget/nuget-sources.json', 'w') as fp:
