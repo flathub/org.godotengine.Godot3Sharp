@@ -1,11 +1,11 @@
 app-id: org.godotengine.Godot3Sharp
 runtime: org.freedesktop.Sdk
-runtime-version: '23.08'
+runtime-version: '25.08'
 sdk: org.freedesktop.Sdk
 add-extensions:
   org.freedesktop.Sdk.Extension.openjdk17:
     directory: jdk
-    version: '23.08'
+    version: '25.08'
     no-autodownload: false
     autodelete: false
 sdk-extensions:
