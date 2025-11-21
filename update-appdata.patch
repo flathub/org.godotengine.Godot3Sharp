@@ -62,8 +62,8 @@ diff --git a/misc/dist/linux/org.godotengine.Godot.appdata.xml b/misc/dist/linux
    <url type="bugtracker">https://github.com/godotengine/godot/issues</url>
 -  <url type="faq">https://docs.godotengine.org/en/latest/about/faq.html</url>
 -  <url type="help">https://docs.godotengine.org</url>
-+  <url type="faq">https://docs.godotengine.org/en/3.5/about/faq.html</url>
-+  <url type="help">https://docs.godotengine.org/en/3.5/</url>
++  <url type="faq">https://docs.godotengine.org/en/3.6/about/faq.html</url>
++  <url type="help">https://docs.godotengine.org/en/3.6/</url>
    <url type="donation">https://godotengine.org/donate</url>
    <url type="translate">https://hosted.weblate.org/projects/godot-engine/godot</url>
 -  <developer_name>The Godot Engine Community</developer_name>
