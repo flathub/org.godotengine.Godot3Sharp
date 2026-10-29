@@ -33,14 +33,15 @@ build-options:
   prepend-ld-library-path: /app/build_staging/xvfb/lib/
 
   env:
-    PKG_CONFIG_PATH: /app/lib/pkgconfig:/app/share/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/sdk/mono6/lib/pkgconfig:/usr/lib/sdk/dotnet8/lib/pkgconfig
+    PKG_CONFIG_PATH: 
+      /app/lib/pkgconfig:/app/share/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/sdk/mono6/lib/pkgconfig:/usr/lib/sdk/dotnet8/lib/pkgconfig
 
     # Will be appended to the version string displayed in the editor and command-line help
     BUILD_NAME: flathub
 
-    DOTNET_CLI_TELEMETRY_OPTOUT: True
+    DOTNET_CLI_TELEMETRY_OPTOUT: true
 
-    DOTNET_NOLOGO: True
+    DOTNET_NOLOGO: true
 
     DOTNET_ROOT: /usr/lib/sdk/dotnet8/lib
 
@@ -92,10 +93,10 @@ modules:
   - name: dotnet
     buildsystem: simple
     build-options:
-        arch:
-            x86_64:
-                env:
-                    RUNTIME: linux-x64
+      arch:
+        x86_64:
+          env:
+            RUNTIME: linux-x64
     build-commands:
       - /usr/lib/sdk/dotnet8/bin/install-sdk.sh
       - cp -r /usr/lib/sdk/dotnet8/lib/packs/ /app/lib/dotnet/
@@ -117,19 +118,22 @@ modules:
     post-install:
       - cd ./src/api/c && make install
     cleanup:
-      - "*.la"
-      - "*.a"
+      - '*.la'
+      - '*.a'
       - /include
 
     sources:
       - type: archive
-        url: https://github.com/brailcom/speechd/releases/download/0.11.5/speech-dispatcher-0.11.5.tar.gz
-        sha512: d6d880bce0ae5bc2a5d519ef7740c689ae8b4b0bb658379762810e4beae3e465a429fbe19f7c490e89db0ea6a36aedd4b2287ac9251b90059b5c2cb3c0dd8a28
+        url: 
+          https://github.com/brailcom/speechd/releases/download/0.12.1/speech-dispatcher-0.12.1.tar.gz
+        sha512: 
+          f386bb25d80e85153db4907c5adece519a86084676a39f958a4f56e53bb957cb9b1232c4e648e73ef8dc5d1ab8e0cd64a5e0d151775fdd8f3b175f47f4864422
         x-checker-data:
           type: anitya
           project-id: 13411
           stable-only: true
-          url-template: https://github.com/brailcom/speechd/releases/download/$version/speech-dispatcher-$version.tar.gz
+          url-template: 
+            https://github.com/brailcom/speechd/releases/download/$version/speech-dispatcher-$version.tar.gz
 
     modules:
       # dotconf provides utility functions to parse config files. It's only linked with the speech-dispatcher server,
@@ -138,7 +142,8 @@ modules:
         sources:
           - type: archive
             url: https://github.com/williamh/dotconf/archive/refs/tags/v1.4.1.tar.gz
-            sha512: a6cada8621295b268d4b4fd85bc0c207e78324c9e84754ead2fdf6c1598ec8bdf626f9c24e66063d921c95d73e83b50ab50416a9b4c9a7a631392552ec46f55a
+            sha512: 
+              a6cada8621295b268d4b4fd85bc0c207e78324c9e84754ead2fdf6c1598ec8bdf626f9c24e66063d921c95d73e83b50ab50416a9b4c9a7a631392552ec46f55a
             x-checker-data:
               type: anitya
               project-id: 13410
@@ -149,7 +154,7 @@ modules:
               - autoreconf -fiv
             dest-filename: autogen.sh
         cleanup:
-          - "*"
+          - '*'
 
   - name: scons
     buildsystem: simple
@@ -166,7 +171,8 @@ modules:
     sources:
       - type: archive
         sha256: 5bed20a7056d4cc3cca34001752109809ad7ae200548e98c7bbc6afbad18eda7
-        url: https://github.com/godotengine/godot/releases/download/3.6-stable/godot-3.6-stable.tar.xz
+        url: 
+          https://github.com/godotengine/godot/releases/download/3.6-stable/godot-3.6-stable.tar.xz
 
       - type: script
         dest-filename: godot.sh
@@ -181,7 +187,8 @@ modules:
         path: nuget/nuget-source.config
       - type: file
         url: https://www.nuget.org/api/v2/package/Microsoft.Build.NoTargets/2.0.1
-        sha512: 19fd7d616993d12d633674fe1e9779eab0aa40aa21eec412561e28e8a7e2de3bae8d9fef9595257134d73f33a9dea9ee0e4ebbafbd32525c123320c1eb5bf160
+        sha512: 
+          19fd7d616993d12d633674fe1e9779eab0aa40aa21eec412561e28e8a7e2de3bae8d9fef9595257134d73f33a9dea9ee0e4ebbafbd32525c123320c1eb5bf160
         dest: nuget-sources
         dest-filename: microsoft.build.notargets.2.0.1.nupkg
       - nuget/nuget-sources.json
@@ -195,13 +202,15 @@ modules:
       - python3 /app/bin/scons $SCONS_FLAGS $SCONS_FLAGS_EXTRA mono_glue=no -j $FLATPAK_BUILDER_N_JOBS
       - xvfb-run bin/godot.* --generate-mono-glue modules/mono/glue
       - rm -f bin/godot.*
-      - python3 /app/bin/scons $SCONS_FLAGS $SCONS_FLAGS_EXTRA target=release_debug mono_glue=yes -j $FLATPAK_BUILDER_N_JOBS
+      - python3 /app/bin/scons $SCONS_FLAGS $SCONS_FLAGS_EXTRA target=release_debug
+        mono_glue=yes -j $FLATPAK_BUILDER_N_JOBS
       - install -D -m755 bin/godot.* /app/bin/godot-bin
       - cp -r bin/* /app/bin
       - rm -f /app/bin/godot.*
       - cp /app/bin/libmonosgen-2.0.so /app/lib/libmonosgen-2.0.so.1
       - install -D -m755 godot.sh /app/bin/godot
-      - desktop-file-edit --set-name="Godot Engine 3 (C#/.NET)" --set-icon=${FLATPAK_ID} misc/dist/linux/org.godotengine.Godot.desktop
+      - desktop-file-edit --set-name="Godot Engine 3 (C#/.NET)" --set-icon=${FLATPAK_ID}
+        misc/dist/linux/org.godotengine.Godot.desktop
       - install -Dm644 misc/dist/linux/org.godotengine.Godot.desktop /app/share/applications/$FLATPAK_ID.desktop
       - install -Dm644 misc/dist/linux/org.godotengine.Godot.xml /app/share/mime/packages/$FLATPAK_ID.xml
       - install -Dm644 misc/dist/linux/org.godotengine.Godot.appdata.xml /app/share/appdata/$FLATPAK_ID.appdata.xml
